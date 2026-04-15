@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+backend:
+  host: "127.0.0.1"
+  port: 9000
+  maxConnections: 5000    # Увеличиваем пул максимально, чтобы не видеть POOL_ERROR
+
+ratelimit:
+  # --- ЗДЕСЬ ВКЛЮЧАЕМ БОЙ ---
+  capacity: 100           # Небольшая "корзина" для резких всплесков
+  refillTokens: 200       # Всего 200 запросов в секунду.
+  # Твой k6 (2000 VU) выдаст гораздо больше, и лимитер начнет их "резать"
+
+security:
+  apiSecretKey: "super-secret-token-123"
+  whiteListIps: []
+
+  # Чтобы не банило по IP и не отсекало по JSON раньше лимитера:
+  maxDepth: 30
+  maxStringLen: 5000
+  maxObjectSize: 1000
+  maxTotalElements: 100000
+
+  maxViolations: 1000000  # Ставим ОГРОМНОЕ число, чтобы ReputationManager не мешал
+  banTimeMinutes: 0
